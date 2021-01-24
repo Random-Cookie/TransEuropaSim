@@ -10,6 +10,8 @@ win = psychopy.visual.Window(
 	fullscr=False,
 	color=[0.9, 0.9, 0.9]
 )
+
+drawer.draw_edges(win)
 drawer.draw_nodes(win)
 drawer.draw_cities(win)
 

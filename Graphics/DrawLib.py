@@ -104,3 +104,29 @@ class BasicNetworkDrawer:
 		orange_cities.draw()
 		yellow_cities.draw()
 		green_cities.draw()
+
+	def draw_edges(self, win: psychopy.visual.Window):
+		points = []
+		for edge in self.network.edges.data():
+			start = edge[0].get_id()
+			end = edge[1].get_id()
+			if edge[2].get('weight') == 2:
+				line = psychopy.visual.Line(
+					win=win,
+					units="pix",
+					lineColor=[-1, -1, -1]
+				)
+				line.lineWidth = 4
+			else:
+				line = psychopy.visual.Line(
+					win=win,
+					units="pix",
+					lineColor=[-1, -1, -1]
+				)
+			x = (int(start[0:2]) * 22) - 400
+			y = (int(start[2:4]) * -40) + 240
+			line.start = [x, y]
+			x = (int(end[0:2]) * 22) - 400
+			y = (int(end[2:4]) * -40) + 240
+			line.end = [x, y]
+			line.draw()

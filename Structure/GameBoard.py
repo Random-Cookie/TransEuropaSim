@@ -30,12 +30,13 @@ class GameBoard:
 		self.nodes[node_id] = node
 
 	def __add_edge(self, double_tracks: dict, start: Node, end: Node):
-		if start.get_id() in double_tracks.keys() and end.get_id() in double_tracks.get(start.get_id()):
-			edge = (start, end, {'weight': 2})
-			self.__map.add_edges_from([edge])
+		if (start.get_id() in double_tracks.keys() and end.get_id() in double_tracks.get(start.get_id()))\
+				or (end.get_id() in double_tracks.keys() and start.get_id() in double_tracks.get(end.get_id())):
+			# edge = Edge(start, end, 2)
+			self.__map.add_edge(start, end, weight=2)
 		else:
-			edge = (start, end, {'weight': 1})
-			self.__map.add_edges_from([edge])
+			# edge = Edge(start, end, 1)
+			self.__map.add_edge(start, end, weight=1)
 
 	@staticmethod
 	def map_city_dict(city_list: str) -> dict:
