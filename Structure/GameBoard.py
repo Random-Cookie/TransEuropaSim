@@ -11,24 +11,34 @@ class GameBoard:
 		"""
 		node = None
 		if node_id in cities.keys():
-			node = City(node_id, cities.get(node_id))
+			colour = cities.get(node_id)[1]
+			if colour == "blue":
+				node = City(node_id, cities.get(node_id), Colour.blue)
+			elif colour == "red":
+				node = City(node_id, cities.get(node_id), Colour.red)
+			elif colour == "orange":
+				node = City(node_id, cities.get(node_id), Colour.orange)
+			elif colour == "yellow":
+				node = City(node_id, cities.get(node_id), Colour.yellow)
+			else:
+				node = City(node_id, cities.get(node_id), Colour.green)
 			self.cities[node_id] = node
-			self.map.add_node(node)
+			self.__map.add_node(node)
 		else:
 			node = Node(node_id)
-			self.map.add_node(node)
+			self.__map.add_node(node)
 		self.nodes[node_id] = node
 
 	def __add_edge(self, double_tracks: dict, start: Node, end: Node):
 		if start.get_id() in double_tracks.keys() and end.get_id() in double_tracks.get(start.get_id()):
 			edge = (start, end, {'weight': 2})
-			self.map.add_edges_from([edge])
+			self.__map.add_edges_from([edge])
 		else:
 			edge = (start, end, {'weight': 1})
-			self.map.add_edges_from([edge])
+			self.__map.add_edges_from([edge])
 
 	@staticmethod
-	def map_cities(city_list: str) -> dict:
+	def map_city_dict(city_list: str) -> dict:
 		""" turn cities list into a dictionary
 		:param city_list: List of cities in form of a string from config file
 		:return: a dictionary of all cities where: node_id -> name
@@ -37,7 +47,7 @@ class GameBoard:
 		city_list = city_list.splitlines()
 		for city in city_list:
 			city_data = city.split(',')
-			city_dict[city_data[0]] = city_data[1]
+			city_dict[city_data[0]] = [city_data[1], city_data[2]]
 		return city_dict
 
 	@staticmethod
@@ -63,7 +73,7 @@ class GameBoard:
 		map_data = map_file.read().split('#')
 		# ":\n" denotes end of config title
 		rows = map_data[1].split(':\n')[1].splitlines()
-		cities = self.map_cities(map_data[2].split(':\n')[1])
+		cities = self.map_city_dict(map_data[2].split(':\n')[1])
 		double_tracks = self.map_double_tracks(map_data[3].split(':\n')[1].splitlines())
 		# build map nodes and edges
 		for i in range(0, len(rows)):
@@ -90,9 +100,11 @@ class GameBoard:
 		self.players = players
 		self.cities = {}
 		self.nodes = {}
-		self.map = nx.Graph()
+		self.__map = nx.Graph()
 		self.__generate_map(map_filepath)
 
+	def get_map(self):
+		return self.__map
 
-gb = GameBoard([], "Structure/Maps/classic.txt")
-print("Complete")
+	def get_cities(self):
+		return self.cities

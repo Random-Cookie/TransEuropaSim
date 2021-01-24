@@ -14,9 +14,12 @@
 5,13
 14,8
 #Cities:
-0900,Glasgow
-0502,Dublin
-0304,Plymouth
+0900,Glasgow,yellow
+0502,Dublin,red
+0304,Plymouth,blue
+0500,T3,blue
+0205,T1,orange
+1104,T2,green
 #DoubleTracks:
 0500,0700
 0500,0401
