@@ -3,7 +3,7 @@ import psychopy.visual
 from Graphics.DrawLib import BasicNetworkDrawer
 
 test_board = gb.GameBoard([], "Structure/Maps/classic.txt")
-drawer = BasicNetworkDrawer(test_board.get_map(), test_board.cities)
+drawer = BasicNetworkDrawer(test_board.get_map(), test_board._cities)
 win = psychopy.visual.Window(
 	size=[1280, 720],
 	units="pix",
@@ -14,9 +14,14 @@ win = psychopy.visual.Window(
 drawer.draw_edges(win)
 drawer.draw_nodes(win)
 drawer.draw_cities(win)
-
 win.flip()
 
-psychopy.event.waitKeys()
+while 'escape' not in psychopy.event.waitKeys():
+
+	drawer.draw_edges(win)
+	drawer.draw_nodes(win)
+	drawer.draw_cities(win)
+
+	win.flip()
 
 win.close()

@@ -22,21 +22,23 @@ class GameBoard:
 				node = City(node_id, cities.get(node_id), Colour.yellow)
 			else:
 				node = City(node_id, cities.get(node_id), Colour.green)
-			self.cities[node_id] = node
+			self._cities[node_id] = node
 			self.__map.add_node(node)
 		else:
 			node = Node(node_id)
 			self.__map.add_node(node)
-		self.nodes[node_id] = node
+		self._nodes[node_id] = node
 
 	def __add_edge(self, double_tracks: dict, start: Node, end: Node):
 		if (start.get_id() in double_tracks.keys() and end.get_id() in double_tracks.get(start.get_id()))\
 				or (end.get_id() in double_tracks.keys() and start.get_id() in double_tracks.get(end.get_id())):
 			# edge = Edge(start, end, 2)
 			self.__map.add_edge(start, end, weight=2)
+			self._edges[start.get_id() + end.get_id()] = (start, end, 2)
 		else:
 			# edge = Edge(start, end, 1)
 			self.__map.add_edge(start, end, weight=1)
+			self._edges[start.get_id() + end.get_id()] = (start, end, 1)
 
 	@staticmethod
 	def map_city_dict(city_list: str) -> dict:
@@ -87,20 +89,21 @@ class GameBoard:
 				node_id = str(start_val + (2 * j)).rjust(2, '0') + str(i).rjust(2, '0')
 				self.__add_node(cities, node_id)
 				if j != 0:  # no horizontal edge needed for first node in row
-					self.__add_edge(double_tracks, self.nodes[node_id], self.nodes[prev_node_id])
+					self.__add_edge(double_tracks, self._nodes[node_id], self._nodes[prev_node_id])
 				if i != 0:  # no intermediate edges needed for first row
 					top_left = str((start_val - 1) + (2 * j)).rjust(2, '0') + str(i - 1).rjust(2, '0')
 					top_right = str((start_val + 1) + (2 * j)).rjust(2, '0') + str(i - 1).rjust(2, '0')
-					if top_left in self.nodes.keys():
-						self.__add_edge(double_tracks, self.nodes.get(node_id), self.nodes.get(top_left))
-					if top_right in self.nodes.keys():
-						self.__add_edge(double_tracks, self.nodes.get(node_id), self.nodes.get(top_right))
+					if top_left in self._nodes.keys():
+						self.__add_edge(double_tracks, self._nodes.get(node_id), self._nodes.get(top_left))
+					if top_right in self._nodes.keys():
+						self.__add_edge(double_tracks, self._nodes.get(node_id), self._nodes.get(top_right))
 				prev_node_id = node_id
 
 	def __init__(self, players: [], map_filepath: str):
-		self.players = players
-		self.cities = {}
-		self.nodes = {}
+		self._players = players
+		self._nodes = {}
+		self._cities = {}
+		self._edges = {}
 		self.__map = nx.Graph()
 		self.__generate_map(map_filepath)
 
@@ -108,4 +111,13 @@ class GameBoard:
 		return self.__map
 
 	def get_cities(self):
-		return self.cities
+		return self._cities
+
+	def get_nodes(self):
+		return self._nodes
+
+	def get_players(self):
+		return self._players
+
+	def get_edges(self):
+		return self._edges
